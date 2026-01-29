@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora DIFAL – Base Dupla</title>
+    <style>
+<link rel="icon" href="icone calculadora.png">
+<link rel="manifest" href="manifest.json">
+
+<script>
+  // Faz o "Ativador" (sw.js) funcionar
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .container { max-width: 400px; width: 100%; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h2 { text-align: center; color: #1a73e8; margin-bottom: 25px; font-size: 1.5rem; }
+        label { font-weight: 600; color: #444; display: block; margin-top: 10px; }
+        input { width: 100%; padding: 12px; margin: 8px 0 18px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        button { width: 100%; padding: 14px; background-color: #1a73e8; color: white; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #1557b0; }
+        
+        .resultado { margin-top: 25px; background: #f8f9fa; padding: 20px; border-left: 5px solid #1a73e8; border-radius: 4px; }
+        .resultado p { margin: 8px 0; display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+        .valor-final { color: #d93025; font-weight: bold; font-size: 1.2rem; }
+
+        /* Estilo para a sua assinatura */
+        footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Calculadora DIFAL</h2>
+
+    <label>Valor da Mercadoria (R$)</label>
+    <input type="number" id="valor" placeholder="Ex: 1000.00" step="0.01">
+
+    <label>Alíquota Interestadual (%)</label>
+    <input type="number" id="aliqInter" placeholder="Ex: 7 ou 12" step="0.01">
+
+    <label>Alíquota Interna Destino (%)</label>
+    <input type="number" id="aliqInterna" placeholder="Ex: 18" step="0.01">
+
+    <button onclick="calcularDIFAL()">Calcular Imposto</button>
+
+    <div class="resultado" id="resultado" style="display:none;">
+        <p><span>ICMS Origem:</span> <strong id="icmsInter"></strong></p>
+        <p><span>Base de Cálculo (Destino):</span> <span id="baseDestino"></span></p>
+        <p><span>ICMS Destino:</span> <strong id="icmsInterno"></strong></p>
+        <hr>
+        <p class="valor-final"><span>DIFAL a Pagar:</span> <span id="difal"></span></p>
+    </div>
+</div>
+
+<footer>
+    Desenvolvido por <strong>Jorge Lucas Carneiro da Silva</strong>
+</footer>
+
+<script>
+function calcularDIFAL() {
+    const valor = parseFloat(document.getElementById("valor").value);
+    const aliqInter = parseFloat(document.getElementById("aliqInter").value) / 100;
+    const aliqInterna = parseFloat(document.getElementById("aliqInterna").value) / 100;
+
+    if (isNaN(valor) || isNaN(aliqInter) || isNaN(aliqInterna)) {
+        alert("Por favor, preencha todos os campos corretamente.");
+        return;
+    }
+
+    const icmsOrigem = valor * aliqInter;
+    const baseDestino = (valor - icmsOrigem) / (1 - aliqInterna);
+    const icmsDestino = baseDestino * aliqInterna;
+    const difalDevido = icmsDestino - icmsOrigem;
+
+    document.getElementById("icmsInter").innerText = formatarMoeda(icmsOrigem);
+    document.getElementById("baseDestino").innerText = formatarMoeda(baseDestino);
+    document.getElementById("icmsInterno").innerText = formatarMoeda(icmsDestino);
+    document.getElementById("difal").innerText = formatarMoeda(difalDevido);
+
+    document.getElementById("resultado").style.display = "block";
+}
+
+function formatarMoeda(valor) {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+</script>
+
+</body>
+</html>

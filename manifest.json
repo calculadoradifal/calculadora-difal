@@ -1,0 +1,17 @@
+{
+  "short_name": "CalcDIFAL",
+  "name": "Calculadora DIFAL – Base Dupla",
+  "icons": [
+    {
+      "src": "icone calculadora.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./calculadora.html",
+  "background_color": "#f0f2f5",
+  "display": "standalone",
+  "scope": "./",
+  "theme_color": "#1a73e8"
+}
